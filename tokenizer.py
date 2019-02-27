@@ -16,6 +16,7 @@ dig_container = []
 words_container = []
 keyword_container = []
 word = []
+digit = []
 contents = list(contents)
 for i, content in enumerate(contents):
 	print str(i) + " " + str(content)
@@ -40,9 +41,21 @@ for i, content in enumerate(contents):
 				else:
 					words_container.append(worded)
 					word[:] = []
+		else:
+			word.append(content)	
+	elif content in list_digits:
+		if (i+1 != len(contents)):
+			if (contents[i+1] in list_digits):
+				digit.append(content)
+			else:
+				digit.append(content)
+				digited = "".join(digit)
+				dig_container.append(digited)
+				digit[:] = []
+		else:
+			dig_container.append(content)
 
-for w in ope_container:
+
+
+for w in dig_container:
 	print w
-
-for x in sym_container:
-	print x
