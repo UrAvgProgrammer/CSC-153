@@ -19,7 +19,6 @@ word = []
 digit = []
 contents = list(contents)
 for i, content in enumerate(contents):
-	print str(i) + " " + str(content)
 	if content in list_symbols:
 		sym_container.append(content)
 	elif content in list_operators:
@@ -54,8 +53,19 @@ for i, content in enumerate(contents):
 				digit[:] = []
 		else:
 			dig_container.append(content)
-
-
-
+print('---------------------------------------')
+print('                table                  ')
+print('---------------------------------------\n')
 for w in dig_container:
-	print w
+	print ('digits - {}'.format(w))
+print('\n---------------------------------------')
+for w in keyword_container:
+	print ('keyword - {}'.format(w))
+print('\n---------------------------------------')
+for w in sym_container:
+	print ('operator - {}'.format(w))
+for w in ope_container:
+	print ('operator - {}'.format(w))
+print('\n---------------------------------------')
+for w in words_container:
+	print ('identifier - {}'.format(w))
