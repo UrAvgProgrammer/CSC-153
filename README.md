@@ -1,2 +1,3 @@
-# CSC-153
-Code for compilers
+# CSC-153 Tokenizer
+To run:
+python tokenizer.py
