@@ -189,7 +189,7 @@ class Tree(object):
         assert isinstance(node, Tree)
         self.children.append(node)
 
-from anytree import Node
+from anytree import Node, RenderTree
 
 def cst(content):
 	cstree = Node(content)		
@@ -203,12 +203,14 @@ def cst(content):
 			elif elem not in ['-', '+', '/', '*', '%']:
 				child_exp.append(elem)
 			else:
-				child = Node(child_exp, parent = cstree)
+				x = child_exp
+				child = Node(x, parent = cstree)
 				print(child_exp)
 				print(elem)
 				print(content[i+1:])
 				child2 = Node(elem, parent = cstree)
 				child3 = Node(content[i+1:len(content)+1], parent = cstree)
+				return cstree
 		else:
 			if elem != ')':
 				child_exp.append(elem)
@@ -219,7 +221,8 @@ def cst(content):
 
 x = token()
 print(x)
-print(cst(x).children)	
+for pre, fill, node in RenderTree(cst(x)):
+	print("%s%s" % (pre, node.name))	
 #data = open('code.txt', 'r')
 #contents = data.read()
 #print(parseTree(x))
