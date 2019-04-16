@@ -1,6 +1,6 @@
 import re
-from pythonds.basic.stack import Stack
-from pythonds.trees.binaryTree import BinaryTree
+#from pythonds.basic.stack import Stack
+#from pythonds.trees.binaryTree import BinaryTree
 
 class Stack2:
 
@@ -146,38 +146,81 @@ def token():
 	return expression
 
 
-def parseTree(content):
-    # content = list(content)
-	# content = content.split()
-	print(content)
-	treeStack = Stack() #to keep track the parent node
-	pTree = BinaryTree('') #Initialize empty tree
-	treeStack.push(pTree)
-	currentNode = pTree
-	for elem in content:
-		if elem == '(':
-			currentNode.insertLeft('')
-			treeStack.push(currentNode)
-			currentNode = currentNode.getLeftChild()
-		elif elem not in ['-', '+', '/', '%', '*', ')']:
-			currentNode.setRootVal(elem)
-			parentNode = treeStack.pop()
-			currentNode = parentNode
-		elif elem in ['-', '+', '/', '%', '*']:
-			currentNode.setRootVal(elem)
-			currentNode.insertRight('')
-			treeStack.push(currentNode)
-			currentNode = currentNode.getRightChild()
-		elif elem == ')':
-			currentNode = treeStack.pop()
+#def parseTree(content):
+#    # content = list(content)
+#	# content = content.split()
+#	print(content)
+#	treeStack = Stack() #to keep track the parent node
+#	pTree = BinaryTree('') #Initialize empty tree
+#	treeStack.push(pTree)
+#	currentNode = pTree
+#	for elem in content:
+#		if elem == '(':
+#			currentNode.insertLeft('')
+#			treeStack.push(currentNode)
+#			currentNode = currentNode.getLeftChild()
+#		elif elem not in ['-', '+', '/', '%', '*', ')']:
+#			currentNode.setRootVal(elem)
+#			parentNode = treeStack.pop()
+#			currentNode = parentNode
+#		elif elem in ['-', '+', '/', '%', '*']:
+#			currentNode.setRootVal(elem)
+#			currentNode.insertRight('')
+#			treeStack.push(currentNode)
+#			currentNode = currentNode.getRightChild()
+#		elif elem == ')':
+#			currentNode = treeStack.pop()
+#		else:
+#			print('error')
+#			exit()
+#	return pTree
+
+class Tree(object):
+    "Generic tree node."
+    def __init__(self, name='root', children=None):
+        self.name = name
+        self.children = []
+        if children is not None:
+            for child in children:
+                self.add_child(child)
+    def __repr__(self):
+        return self.name
+    def add_child(self, node):
+        assert isinstance(node, Tree)
+        self.children.append(node)
+
+from anytree import Node
+
+def cst(content):
+	cstree = Node(content)		
+	child_exp = []
+	flag = 0
+	for i, elem in enumerate(content):
+		if flag == 0:
+			if elem == '(':
+				child_exp.append(elem)
+				flag = 1
+			elif elem not in ['-', '+', '/', '*', '%']:
+				child_exp.append(elem)
+			else:
+				child = Node(child_exp, parent = cstree)
+				print(child_exp)
+				print(elem)
+				print(content[i+1:])
+				child2 = Node(elem, parent = cstree)
+				child3 = Node(content[i+1:len(content)+1], parent = cstree)
 		else:
-			print('error')
-			exit()
-	return pTree
+			if elem != ')':
+				child_exp.append(elem)
+			else:
+				child_exp.append(elem)
+				flag = 0
+	return cstree
 
 x = token()
+print(x)
+print(cst(x).children)	
+#data = open('code.txt', 'r')
+#contents = data.read()
+#print(parseTree(x))
 
-data = open('code.txt', 'r')
-contents = data.read()
-
-print(parseTree(x))
