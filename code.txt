@@ -1,9 +1,1 @@
-#include "stdio.h"
-
-int main()
-{
-	int a;
-	int var = 1 + 12.4;
-	string x = "x for my life"
-	return x;
-}
+5 + ( 1 * 12 )
