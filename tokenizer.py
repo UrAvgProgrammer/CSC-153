@@ -1,4 +1,6 @@
 import re
+import sys
+sys.setrecursionlimit(10000)
 #from pythonds.basic.stack import Stack
 #from pythonds.trees.binaryTree import BinaryTree
 
@@ -192,12 +194,14 @@ class Tree(object):
 from anytree import Node, RenderTree
 
 def cst(content):
+
 	cstree = Node(content)		
 	child_exp = []
 	flag = 0
 	for i, elem in enumerate(content):
 		if flag == 0:
 			if elem == '(':
+				i = Node(elem)
 				child_exp.append(elem)
 				flag = 1
 			elif elem not in ['-', '+', '/', '*', '%']:
@@ -205,11 +209,10 @@ def cst(content):
 			else:
 				x = child_exp
 				child = Node(x, parent = cstree)
-				print(child_exp)
-				print(elem)
-				print(content[i+1:])
+				cst(x).parent = child
 				child2 = Node(elem, parent = cstree)
 				child3 = Node(content[i+1:len(content)+1], parent = cstree)
+				cst(content[i+1:len(content)+1]).parent = child3
 				return cstree
 		else:
 			if elem != ')':
@@ -220,10 +223,9 @@ def cst(content):
 	return cstree
 
 x = token()
-print(x)
+print("\n")
 for pre, fill, node in RenderTree(cst(x)):
 	print("%s%s" % (pre, node.name))	
 #data = open('code.txt', 'r')
 #contents = data.read()
 #print(parseTree(x))
-
