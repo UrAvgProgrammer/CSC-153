@@ -68,7 +68,7 @@ def token():
 				worded = "".join(reversed(word))
 				if worded in list_keywords:
 					keyword_container.append(worded)
-					expression.append(worded)
+					expression.append(['KEYWORD',worded])
 					word[:] = []
 				else:
 					words_container.append(worded)
