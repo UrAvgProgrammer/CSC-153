@@ -1,7 +1,5 @@
 import sys
 import re
-from pythonds.basic.stack import Stack
-from pythonds.trees.binaryTree import BinaryTree
 
 def lex(characters, token_exprs):
     pos = 0
@@ -54,6 +52,8 @@ token_exprs = [
     (r'{', OPEN_CURL),
     (r'}', CLOSE_CURL),
     (r'[0-9]+', NUMBER),
+    (r'int', RESERVED),
+    (r'main', RESERVED),
     (r'[A-Za-z][A-Za-z0-9_]*', NAME),
 ]
 
@@ -62,65 +62,51 @@ def imp_lex(characters):
 
 # -------------------------------------- PARSER HERE --------------------------------------
 
-# class Stack:
+# start: int main() { expression }
 
-#     def __init__(self):
-#         self.stack = []
+# expression : factor * | / factor ;
 
-#     def add(self, dataval):
-# # Use list append method to add element
-#         if dataval:
-#             self.stack.append(dataval)
-#             return True
-#         else:
-#             return False
-#     def elem(self):
-#         for x in self.stack:
-#             print (x)
+# factor : term + | - factor ;
 
-#     def len(self):
-#         return len(self.stack)
-# # Use list pop method to remove element
-#     def remove(self):
-#         if len(self.stack) <= 0:
-#             return ("No element in the Stack")
-#         else:
-#             return self.stack.pop()
+# term : term | var | num ;
+
+def start(tokens):
+    code = []
+    start = []
+    for token in tokens:
+        if token[0] == 'int':
+            start.append(token[0])
+        elif token[0] == 'main':
+            start.append(token[0])
+        elif token[0] == '(':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append(token[0])
+        elif token[0] == ')':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append(token[0])
+        elif token[0] == '{':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append(token[0])
+        elif token[0] == '}':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append(token[0])
+        else:
+            code.append(token[0])
+    return code
+
 
 def parser(tokens):
     pass
 
-def AST(tokens):
-    content = []
-    for token in tokens:
-        content.append(token[0])
-    # content = list(content)
-    # content = content.split()
-    print(content)
-    treeStack = Stack() #to keep track the parent node
-    pTree = BinaryTree('') #Initialize empty tree
-    treeStack.push(pTree)
-    currentNode = pTree
-    for elem in content:
-        if elem == '(':
-            currentNode.insertLeft('')
-            treeStack.push(currentNode)
-            currentNode = currentNode.getLeftChild()
-        elif elem not in ['-', '+', '/', '%', '*', ')']:
-            currentNode.setRootVal(elem)
-            parentNode = treeStack.pop()
-            currentNode = parentNode
-        elif elem in ['-', '+', '/', '%', '*']:
-            currentNode.setRootVal(elem)
-            currentNode.insertRight('')
-            treeStack.push(currentNode)
-            currentNode = currentNode.getRightChild()
-        elif elem == ')':
-            currentNode = treeStack.pop()
-        else:
-            print('error')
-            exit()
-    return pTree
+
 
 data = open('code.txt', 'r')
 contents = data.read()
@@ -129,4 +115,4 @@ for token in tokens:
     print (token[0])
     print (token[1])
 
-print(AST(tokens))
+print(start(tokens))
