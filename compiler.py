@@ -1,65 +1,7 @@
-import sys
-import re
-
-def lex(characters, token_exprs):
-    pos = 0
-    tokens = []
-    while pos < len(characters):
-        match = None
-        for token_expr in token_exprs:
-            pattern, tag = token_expr
-            regex = re.compile(pattern)
-            match = regex.match(characters, pos)
-            if match:
-                text = match.group(0)
-                if tag:
-                    token = (text, tag)
-                    tokens.append(token)
-                break
-        if not match:
-            sys.stderr.write('Illegal character: %s\n' % characters[pos])
-            sys.exit(1)
-        else:
-            pos = match.end(0)
-    return tokens
-
-
-RESERVED = 'RESERVED'
-NAME = 'NAME'
-OPEN_PAR = 'OPEN_PAR'
-CLOSE_PAR = 'CLOSE_PAR'
-OPEN_CURL = 'OPEN_CURL'
-CLOSE_CURL = 'CLOSE_CURL'
-EQUAL = 'EQUAL'
-ADD = 'ADD'
-SUB = 'SUB'
-MUL = 'MUL'
-DIV = 'DIV'
-NUMBER = 'NUMBER'
-END_ST = 'END_ST'
-
-token_exprs = [
-    (r'[ \n\t]+', None),
-    (r'#[^\n]*', None),
-    (r'\(', OPEN_PAR),
-    (r'\)', CLOSE_PAR),
-    (r';', END_ST),
-    (r'\+', ADD),
-    (r'-',  SUB),
-    (r'\*', MUL),
-    (r'/', DIV),
-    (r'=', EQUAL),
-    (r'{', OPEN_CURL),
-    (r'}', CLOSE_CURL),
-    (r'[0-9]+', NUMBER),
-    (r'int', RESERVED),
-    (r'main', RESERVED),
-    (r'[A-Za-z][A-Za-z0-9_]*', NAME),
-]
-
-def imp_lex(characters):
-    return lex(characters, token_exprs)
-
+from pythonds.basic.stack import Stack
+from pythonds.trees.binaryTree import BinaryTree
+from parseit import *
+from lexer import *
 # -------------------------------------- PARSER HERE --------------------------------------
 
 # start: int main() { expression }
@@ -82,37 +24,67 @@ def start(tokens):
             if token[0] not in start:
                 start.append(token[0])
             else:
-                code.append(token[0])
+                code.append((token))
         elif token[0] == ')':
             if token[0] not in start:
                 start.append(token[0])
             else:
-                code.append(token[0])
+                code.append((token))
         elif token[0] == '{':
             if token[0] not in start:
                 start.append(token[0])
             else:
-                code.append(token[0])
+                code.append((token))
         elif token[0] == '}':
             if token[0] not in start:
                 start.append(token[0])
             else:
-                code.append(token[0])
+                code.append((token))
         else:
-            code.append(token[0])
+            code.append((token))
     return code
 
-
-def parser(tokens):
-    pass
+def ast(tokens):
+    tokens = start(tokens)
+    content = []
+    for token in tokens:
+        if token[0] not in ['{', '}', ';']:
+            content.append(token[0])
+    print(content)
+    treeStack = Stack() #to keep track the parent node
+    pTree = BinaryTree('') #Initialize empty tree
+    treeStack.push(pTree)
+    currentNode = pTree
+    for elem in content:
+        if elem == '(':
+            currentNode.insertLeft('')
+            treeStack.push(currentNode)
+            currentNode = currentNode.getLeftChild()
+        elif elem not in ['-', '+', '/', '%', '*', ')', ';']:
+            currentNode.setRootVal(elem)
+            parentNode = treeStack.pop()
+            currentNode = parentNode
+        elif elem in ['-', '+', '/', '%', '*']:
+            currentNode.setRootVal(elem)
+            currentNode.insertRight('')
+            treeStack.push(currentNode)
+            currentNode = currentNode.getRightChild()
+        elif elem == ')':
+            currentNode = treeStack.pop()
+        elif elem == ';':
+            pass
+        else:
+            print('error')
+            exit()
+    return pTree
 
 
 
 data = open('code.txt', 'r')
 contents = data.read()
 tokens = imp_lex(contents)
-for token in tokens:
-    print (token[0])
-    print (token[1])
+# for token in tokens:
+#     print(token)
 
-print(start(tokens))
+parse = Parser(tokens)
+parse.parse()
