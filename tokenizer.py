@@ -1,231 +1,266 @@
-import re
-import sys
-sys.setrecursionlimit(10000)
-#from pythonds.basic.stack import Stack
-#from pythonds.trees.binaryTree import BinaryTree
+""" SPI - Simple Pascal Interpreter """
 
-class Stack2:
+###############################################################################
+#                                                                             #
+#  LEXER                                                                      #
+#                                                                             #
+###############################################################################
 
-    def __init__(self):
-        self.stack = []
-
-    def add(self, dataval):
-# Use list append method to add element
-        if dataval:
-            self.stack.append(dataval)
-            return True
-        else:
-            return False
-    def elem(self):
-    	for x in self.stack:
-    		print (x)
-
-    def len(self):
-    	return len(self.stack)
-# Use list pop method to remove element
-    def remove(self):
-        if len(self.stack) <= 0:
-            return ("No element in the Stack")
-        else:
-            return self.stack.pop()
-
-def token():
-	data = open('code.txt', 'r')
-	contents = data.read()
-	expression = []
-	list_keywords = ['print', 'scanf', 'include', 'int', 'float', 'char', 'double', "stdio.h", 'main', 'do', 'return', 'while', 'for']
-	list_symbols = ['#', '%', '(', ')', '{', '}', '?',  ';', '.', '_', '"', "'"]
-	list_operators = ['+', '/', '*', '-', '>', '<', '=', '!']
-	list_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-	list_letters = ['A', 'a','B','b','C','c','D','d','E','e','F','f','G','g','H','h','I','i','J','j','K','k'\
-    				'L','l','M','m','N','n','O','o','P','p','Q','q','R','r','S','s','T','t','U','u','V','v',\
-				'W','w','X','x','Y','y','Z','z']
-
-	sym_container = []
-	ope_container = []
-	dig_container = []
-	words_container = []
-	keyword_container = []
-	word = []
-	digit = []
-	contents = list(contents)
-	flag = 0
-	astack = Stack2()
-
-	for i, content in enumerate(contents):
-		if flag == 1:
-			# print('entered at flag 1')
-			if content != '"':
-				# print('entered at statement not ""')
-				astack.add(content)
-			else:
-				# print('entered else at flag 1')
-				sym_container.append(content)
-				while astack.len() != 0:
-					# print('flag 1 loop')
-					x = astack.remove()
-					word.append(x)
-				worded = "".join(reversed(word))
-				if worded in list_keywords:
-					keyword_container.append(worded)
-					expression.append(['KEYWORD',worded])
-					word[:] = []
-				else:
-					words_container.append(worded)
-					expression.append(worded)
-					word[:] = []
-				flag = 0
-		elif content == '"':
-			# print('entered at statement 2')
-			sym_container.append(content)
-			expression.append(content)
-			flag = 1
-		elif content in list_symbols:
-			sym_container.append(content)
-			expression.append(content)
-		elif content in list_operators:
-			ope_container.append(content)
-			expression.append(content)
-		elif content in list_letters:
-			if (i+1 != len(contents)):
-				if (contents[i+1] in list_letters):
-					word.append(content)
-					expression.append(content)
-				elif(contents[i+1] in list_digits):
-					word.append(content)
-					expression.append(content)
-				elif(str(contents[i+1]) == '_'):
-					word.append(content)
-					expression.append(content)
-				else:
-					word.append(content)
-					worded = "".join(word)
-					if worded in list_keywords:
-						keyword_container.append(worded)
-						expression.append(worded)
-						word[:] = []
-					else:
-						words_container.append(worded)
-						expression.append(worded)
-						word[:] = []
-			else:
-				word.append(content)
-		elif content in list_digits:
-			if (i+1 != len(contents)):
-				if (contents[i+1] in list_digits):
-					digit.append(content)
-				elif contents[i+1] == '.':
-					digit.append(content)
-					digit.append(".")
-				else:
-					digit.append(content)
-					digited = "".join(digit)
-					dig_container.append(digited)
-					expression.append(digited)
-					digit[:] = []
-			else:
-				dig_container.append(content)
-				expression.append(content)
-
-	print('---------------------------------------')
-	print('                table                  ')
-	print('---------------------------------------\n')
-	for w in dig_container:
-		print ('digits - {}'.format(w))
-	print('\n---------------------------------------')
-	for w in keyword_container:
-		print ('keyword - {}'.format(w))
-	print('\n---------------------------------------')
-	for w in sym_container:
-		print ('operator - {}'.format(w))
-	for w in ope_container:
-		print ('operator - {}'.format(w))
-	print('\n---------------------------------------')
-	for w in words_container:
-		print ('identifier - {}'.format(w))
-	print('\n---------------------------------------')
-	print ('expression')
-	return expression
+# Token types
+#
+# EOF (end-of-file) token is used to indicate that
+# there is no more input left for lexical analysis
+INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF = (
+    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', '(', ')', 'EOF'
+)
 
 
-#def parseTree(content):
-#    # content = list(content)
-#	# content = content.split()
-#	print(content)
-#	treeStack = Stack() #to keep track the parent node
-#	pTree = BinaryTree('') #Initialize empty tree
-#	treeStack.push(pTree)
-#	currentNode = pTree
-#	for elem in content:
-#		if elem == '(':
-#			currentNode.insertLeft('')
-#			treeStack.push(currentNode)
-#			currentNode = currentNode.getLeftChild()
-#		elif elem not in ['-', '+', '/', '%', '*', ')']:
-#			currentNode.setRootVal(elem)
-#			parentNode = treeStack.pop()
-#			currentNode = parentNode
-#		elif elem in ['-', '+', '/', '%', '*']:
-#			currentNode.setRootVal(elem)
-#			currentNode.insertRight('')
-#			treeStack.push(currentNode)
-#			currentNode = currentNode.getRightChild()
-#		elif elem == ')':
-#			currentNode = treeStack.pop()
-#		else:
-#			print('error')
-#			exit()
-#	return pTree
+class Token(object):
+    def __init__(self, type, value):
+        self.type = type
+        self.value = value
 
-class Tree(object):
-    "Generic tree node."
-    def __init__(self, name='root', children=None):
-        self.name = name
-        self.children = []
-        if children is not None:
-            for child in children:
-                self.add_child(child)
+    def __str__(self):
+        """String representation of the class instance.
+
+        Examples:
+            Token(INTEGER, 3)
+            Token(PLUS, '+')
+            Token(MUL, '*')
+        """
+        return 'Token({type}, {value})'.format(
+            type=self.type,
+            value=repr(self.value)
+        )
+
     def __repr__(self):
-        return self.name
-    def add_child(self, node):
-        assert isinstance(node, Tree)
-        self.children.append(node)
+        return self.__str__()
 
-from anytree import Node, RenderTree
 
-def cst(content):
+class Lexer(object):
+    def __init__(self, text):
+        # client string input, e.g. "4 + 2 * 3 - 6 / 2"
+        self.text = text
+        # self.pos is an index into self.text
+        self.pos = 0
+        self.current_char = self.text[self.pos]
 
-	cstree = Node(content)		
-	child_exp = []
-	flag = 0
-	for i, elem in enumerate(content):
-		if flag == 0:
-			if elem == '(':
-				i = Node(elem)
-				child_exp.append(elem)
-				flag = 1
-			elif elem not in ['-', '+', '/', '*', '%']:
-				child_exp.append(elem)
-			else:
-				x = child_exp
-				child = Node(x, parent = cstree)
-				cst(x).parent = child
-				child2 = Node(elem, parent = cstree)
-				child3 = Node(content[i+1:len(content)+1], parent = cstree)
-				cst(content[i+1:len(content)+1]).parent = child3
-				return cstree
-		else:
-			if elem != ')':
-				child_exp.append(elem)
-			else:
-				child_exp.append(elem)
-				flag = 0
-	return cstree
+    def error(self):
+        raise Exception('Invalid character')
 
-x = token()
-print("\n")
-for pre, fill, node in RenderTree(cst(x)):
-	print("%s%s" % (pre, node.name))	
-#data = open('code.txt', 'r')
-#contents = data.read()
-#print(parseTree(x))
+    def advance(self):
+        """Advance the `pos` pointer and set the `current_char` variable."""
+        self.pos += 1
+        if self.pos > len(self.text) - 1:
+            self.current_char = None  # Indicates end of input
+        else:
+            self.current_char = self.text[self.pos]
+
+    def skip_whitespace(self):
+        while self.current_char is not None and self.current_char.isspace():
+            self.advance()
+
+    def integer(self):
+        """Return a (multidigit) integer consumed from the input."""
+        result = ''
+        while self.current_char is not None and self.current_char.isdigit():
+            result += self.current_char
+            self.advance()
+        return int(result)
+
+    def get_next_token(self):
+        """Lexical analyzer (also known as scanner or tokenizer)
+
+        This method is responsible for breaking a sentence
+        apart into tokens. One token at a time.
+        """
+        while self.current_char is not None:
+
+            if self.current_char.isspace():
+                self.skip_whitespace()
+                continue
+
+            if self.current_char.isdigit():
+                return Token(INTEGER, self.integer())
+
+            if self.current_char == '+':
+                self.advance()
+                return Token(PLUS, '+')
+
+            if self.current_char == '-':
+                self.advance()
+                return Token(MINUS, '-')
+
+            if self.current_char == '*':
+                self.advance()
+                return Token(MUL, '*')
+
+            if self.current_char == '/':
+                self.advance()
+                return Token(DIV, '/')
+
+            if self.current_char == '(':
+                self.advance()
+                return Token(LPAREN, '(')
+
+            if self.current_char == ')':
+                self.advance()
+                return Token(RPAREN, ')')
+
+            self.error()
+
+        return Token(EOF, None)
+
+
+###############################################################################
+#                                                                             #
+#  PARSER                                                                     #
+#                                                                             #
+###############################################################################
+
+class AST(object):
+    pass
+
+
+class BinOp(AST):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.token = self.op = op
+        self.right = right
+
+
+class Num(AST):
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+
+
+class Parser(object):
+    def __init__(self, lexer):
+        self.lexer = lexer
+        # set current token to the first token taken from the input
+        self.current_token = self.lexer.get_next_token()
+
+    def error(self):
+        raise Exception('Invalid syntax')
+
+    def eat(self, token_type):
+        # compare the current token type with the passed token
+        # type and if they match then "eat" the current token
+        # and assign the next token to the self.current_token,
+        # otherwise raise an exception.
+        if self.current_token.type == token_type:
+            self.current_token = self.lexer.get_next_token()
+        else:
+            self.error()
+
+    def factor(self):
+        """factor : INTEGER | LPAREN expr RPAREN"""
+        token = self.current_token
+        if token.type == INTEGER:
+            self.eat(INTEGER)
+            return Num(token)
+        elif token.type == LPAREN:
+            self.eat(LPAREN)
+            node = self.expr()
+            self.eat(RPAREN)
+            return node
+
+    def term(self):
+        """term : factor ((MUL | DIV) factor)*"""
+        node = self.factor()
+
+        while self.current_token.type in (MUL, DIV):
+            token = self.current_token
+            if token.type == MUL:
+                self.eat(MUL)
+            elif token.type == DIV:
+                self.eat(DIV)
+
+            node = BinOp(left=node, op=token, right=self.factor())
+
+        return node
+
+    def expr(self):
+        """
+        expr   : term ((PLUS | MINUS) term)*
+        term   : factor ((MUL | DIV) factor)*
+        factor : INTEGER | LPAREN expr RPAREN
+        """
+        node = self.term()
+
+        while self.current_token.type in (PLUS, MINUS):
+            token = self.current_token
+            if token.type == PLUS:
+                self.eat(PLUS)
+            elif token.type == MINUS:
+                self.eat(MINUS)
+
+            node = BinOp(left=node, op=token, right=self.term())
+
+        return node
+
+    def parse(self):
+        return self.expr()
+
+
+###############################################################################
+#                                                                             #
+#  INTERPRETER                                                                #
+#                                                                             #
+###############################################################################
+
+class NodeVisitor(object):
+    def visit(self, node):
+        method_name = 'visit_' + type(node).__name__
+        visitor = getattr(self, method_name, self.generic_visit)
+        return visitor(node)
+
+    def generic_visit(self, node):
+        raise Exception('No visit_{} method'.format(type(node).__name__))
+
+
+class Interpreter(NodeVisitor):
+    def __init__(self, parser):
+        self.parser = parser
+
+    def visit_BinOp(self, node):
+        if node.op.type == PLUS:
+            return self.visit(node.left) + self.visit(node.right)
+        elif node.op.type == MINUS:
+            return self.visit(node.left) - self.visit(node.right)
+        elif node.op.type == MUL:
+            return self.visit(node.left) * self.visit(node.right)
+        elif node.op.type == DIV:
+            return self.visit(node.left) / self.visit(node.right)
+
+    def visit_Num(self, node):
+        return node.value
+
+    def interpret(self):
+        tree = self.parser.parse()
+        return self.visit(tree)
+
+
+def main():
+    while True:
+        try:
+            try:
+                text = raw_input('spi> ')
+            except NameError:  # Python3
+                text = input('spi> ')
+        except EOFError:
+            break
+        if not text:
+            continue
+
+        lexer = Lexer(text)
+        parser = Parser(lexer)
+        print(parser)
+        # interpreter = Interpreter(parser)
+        # result = interpreter.interpret()
+        # print(result)
+
+
+if __name__ == '__main__':
+    main()

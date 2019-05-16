@@ -26,7 +26,7 @@ def lex(characters, token_exprs):
 
 RESERVED = 'RESERVED'
 DECLARE = 'DECLARE'
-NAME = 'IDENTIFIER'
+IDENTIFIER = 'IDENTIFIER'
 OPEN_PAR = 'OPEN_PAR'
 CLOSE_PAR = 'CLOSE_PAR'
 OPEN_CURL = 'OPEN_CURL'
@@ -56,7 +56,7 @@ token_exprs = [
     (r'return', RESERVED),
     (r'int', DECLARE),
     (r'main', RESERVED),
-    (r'[A-Za-z][A-Za-z0-9_]*', NAME),
+    (r'[A-Za-z][A-Za-z0-9_]*', IDENTIFIER),
 ]
 
 def imp_lex(characters):
