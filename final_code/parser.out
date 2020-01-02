@@ -1,0 +1,500 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    CLOSE_CURL
+    OPEN_CURL
+
+Grammar
+
+Rule 0     S' -> assign
+Rule 1     assign -> NAME EQUAL expr END_ST
+Rule 2     expr -> expr ADD term
+Rule 3     expr -> OPEN_PAR expr ADD term CLOSE_PAR
+Rule 4     expr -> expr SUB term
+Rule 5     expr -> OPEN_PAR expr SUB term CLOSE_PAR
+Rule 6     term -> term MULT factor
+Rule 7     term -> OPEN_PAR expr MULT factor CLOSE_PAR
+Rule 8     term -> term DIV factor
+Rule 9     term -> OPEN_PAR expr DIV factor CLOSE_PAR
+Rule 10    expr -> term
+Rule 11    term -> factor
+Rule 12    factor -> NUMBER
+
+Terminals, with rules where they appear
+
+ADD                  : 2 3
+CLOSE_CURL           : 
+CLOSE_PAR            : 3 5 7 9
+DIV                  : 8 9
+END_ST               : 1
+EQUAL                : 1
+MULT                 : 6 7
+NAME                 : 1
+NUMBER               : 12
+OPEN_CURL            : 
+OPEN_PAR             : 3 5 7 9
+SUB                  : 4 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+assign               : 0
+expr                 : 1 2 3 4 5 7 9
+factor               : 6 7 8 9 11
+term                 : 2 3 4 5 6 8 10
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . assign
+    (1) assign -> . NAME EQUAL expr END_ST
+
+    NAME            shift and go to state 2
+
+    assign                         shift and go to state 1
+
+state 1
+
+    (0) S' -> assign .
+
+
+
+state 2
+
+    (1) assign -> NAME . EQUAL expr END_ST
+
+    EQUAL           shift and go to state 3
+
+
+state 3
+
+    (1) assign -> NAME EQUAL . expr END_ST
+    (2) expr -> . expr ADD term
+    (3) expr -> . OPEN_PAR expr ADD term CLOSE_PAR
+    (4) expr -> . expr SUB term
+    (5) expr -> . OPEN_PAR expr SUB term CLOSE_PAR
+    (10) expr -> . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 6
+    NUMBER          shift and go to state 8
+
+    expr                           shift and go to state 4
+    term                           shift and go to state 5
+    factor                         shift and go to state 7
+
+state 4
+
+    (1) assign -> NAME EQUAL expr . END_ST
+    (2) expr -> expr . ADD term
+    (4) expr -> expr . SUB term
+
+    END_ST          shift and go to state 9
+    ADD             shift and go to state 10
+    SUB             shift and go to state 11
+
+
+state 5
+
+    (10) expr -> term .
+    (6) term -> term . MULT factor
+    (8) term -> term . DIV factor
+
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    END_ST          reduce using rule 10 (expr -> term .)
+    ADD             reduce using rule 10 (expr -> term .)
+    SUB             reduce using rule 10 (expr -> term .)
+    MULT            shift and go to state 12
+    DIV             shift and go to state 13
+
+  ! MULT            [ reduce using rule 10 (expr -> term .) ]
+  ! DIV             [ reduce using rule 10 (expr -> term .) ]
+
+
+state 6
+
+    (3) expr -> OPEN_PAR . expr ADD term CLOSE_PAR
+    (5) expr -> OPEN_PAR . expr SUB term CLOSE_PAR
+    (7) term -> OPEN_PAR . expr MULT factor CLOSE_PAR
+    (9) term -> OPEN_PAR . expr DIV factor CLOSE_PAR
+    (2) expr -> . expr ADD term
+    (3) expr -> . OPEN_PAR expr ADD term CLOSE_PAR
+    (4) expr -> . expr SUB term
+    (5) expr -> . OPEN_PAR expr SUB term CLOSE_PAR
+    (10) expr -> . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 6
+    NUMBER          shift and go to state 8
+
+    expr                           shift and go to state 14
+    term                           shift and go to state 5
+    factor                         shift and go to state 7
+
+state 7
+
+    (11) term -> factor .
+
+    MULT            reduce using rule 11 (term -> factor .)
+    DIV             reduce using rule 11 (term -> factor .)
+    END_ST          reduce using rule 11 (term -> factor .)
+    ADD             reduce using rule 11 (term -> factor .)
+    SUB             reduce using rule 11 (term -> factor .)
+    CLOSE_PAR       reduce using rule 11 (term -> factor .)
+
+
+state 8
+
+    (12) factor -> NUMBER .
+
+    MULT            reduce using rule 12 (factor -> NUMBER .)
+    DIV             reduce using rule 12 (factor -> NUMBER .)
+    END_ST          reduce using rule 12 (factor -> NUMBER .)
+    ADD             reduce using rule 12 (factor -> NUMBER .)
+    SUB             reduce using rule 12 (factor -> NUMBER .)
+    CLOSE_PAR       reduce using rule 12 (factor -> NUMBER .)
+
+
+state 9
+
+    (1) assign -> NAME EQUAL expr END_ST .
+
+    $end            reduce using rule 1 (assign -> NAME EQUAL expr END_ST .)
+
+
+state 10
+
+    (2) expr -> expr ADD . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 16
+    NUMBER          shift and go to state 8
+
+    term                           shift and go to state 15
+    factor                         shift and go to state 7
+
+state 11
+
+    (4) expr -> expr SUB . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 16
+    NUMBER          shift and go to state 8
+
+    term                           shift and go to state 17
+    factor                         shift and go to state 7
+
+state 12
+
+    (6) term -> term MULT . factor
+    (12) factor -> . NUMBER
+
+    NUMBER          shift and go to state 8
+
+    factor                         shift and go to state 18
+
+state 13
+
+    (8) term -> term DIV . factor
+    (12) factor -> . NUMBER
+
+    NUMBER          shift and go to state 8
+
+    factor                         shift and go to state 19
+
+state 14
+
+    (3) expr -> OPEN_PAR expr . ADD term CLOSE_PAR
+    (5) expr -> OPEN_PAR expr . SUB term CLOSE_PAR
+    (7) term -> OPEN_PAR expr . MULT factor CLOSE_PAR
+    (9) term -> OPEN_PAR expr . DIV factor CLOSE_PAR
+    (2) expr -> expr . ADD term
+    (4) expr -> expr . SUB term
+
+    ADD             shift and go to state 20
+    SUB             shift and go to state 21
+    MULT            shift and go to state 22
+    DIV             shift and go to state 23
+
+
+state 15
+
+    (2) expr -> expr ADD term .
+    (6) term -> term . MULT factor
+    (8) term -> term . DIV factor
+
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    END_ST          reduce using rule 2 (expr -> expr ADD term .)
+    ADD             reduce using rule 2 (expr -> expr ADD term .)
+    SUB             reduce using rule 2 (expr -> expr ADD term .)
+    MULT            shift and go to state 12
+    DIV             shift and go to state 13
+
+  ! MULT            [ reduce using rule 2 (expr -> expr ADD term .) ]
+  ! DIV             [ reduce using rule 2 (expr -> expr ADD term .) ]
+
+
+state 16
+
+    (7) term -> OPEN_PAR . expr MULT factor CLOSE_PAR
+    (9) term -> OPEN_PAR . expr DIV factor CLOSE_PAR
+    (2) expr -> . expr ADD term
+    (3) expr -> . OPEN_PAR expr ADD term CLOSE_PAR
+    (4) expr -> . expr SUB term
+    (5) expr -> . OPEN_PAR expr SUB term CLOSE_PAR
+    (10) expr -> . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 6
+    NUMBER          shift and go to state 8
+
+    expr                           shift and go to state 24
+    factor                         shift and go to state 7
+    term                           shift and go to state 5
+
+state 17
+
+    (4) expr -> expr SUB term .
+    (6) term -> term . MULT factor
+    (8) term -> term . DIV factor
+
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    END_ST          reduce using rule 4 (expr -> expr SUB term .)
+    ADD             reduce using rule 4 (expr -> expr SUB term .)
+    SUB             reduce using rule 4 (expr -> expr SUB term .)
+    MULT            shift and go to state 12
+    DIV             shift and go to state 13
+
+  ! MULT            [ reduce using rule 4 (expr -> expr SUB term .) ]
+  ! DIV             [ reduce using rule 4 (expr -> expr SUB term .) ]
+
+
+state 18
+
+    (6) term -> term MULT factor .
+
+    MULT            reduce using rule 6 (term -> term MULT factor .)
+    DIV             reduce using rule 6 (term -> term MULT factor .)
+    END_ST          reduce using rule 6 (term -> term MULT factor .)
+    ADD             reduce using rule 6 (term -> term MULT factor .)
+    SUB             reduce using rule 6 (term -> term MULT factor .)
+    CLOSE_PAR       reduce using rule 6 (term -> term MULT factor .)
+
+
+state 19
+
+    (8) term -> term DIV factor .
+
+    MULT            reduce using rule 8 (term -> term DIV factor .)
+    DIV             reduce using rule 8 (term -> term DIV factor .)
+    END_ST          reduce using rule 8 (term -> term DIV factor .)
+    ADD             reduce using rule 8 (term -> term DIV factor .)
+    SUB             reduce using rule 8 (term -> term DIV factor .)
+    CLOSE_PAR       reduce using rule 8 (term -> term DIV factor .)
+
+
+state 20
+
+    (3) expr -> OPEN_PAR expr ADD . term CLOSE_PAR
+    (2) expr -> expr ADD . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 16
+    NUMBER          shift and go to state 8
+
+    term                           shift and go to state 25
+    factor                         shift and go to state 7
+
+state 21
+
+    (5) expr -> OPEN_PAR expr SUB . term CLOSE_PAR
+    (4) expr -> expr SUB . term
+    (6) term -> . term MULT factor
+    (7) term -> . OPEN_PAR expr MULT factor CLOSE_PAR
+    (8) term -> . term DIV factor
+    (9) term -> . OPEN_PAR expr DIV factor CLOSE_PAR
+    (11) term -> . factor
+    (12) factor -> . NUMBER
+
+    OPEN_PAR        shift and go to state 16
+    NUMBER          shift and go to state 8
+
+    term                           shift and go to state 26
+    factor                         shift and go to state 7
+
+state 22
+
+    (7) term -> OPEN_PAR expr MULT . factor CLOSE_PAR
+    (12) factor -> . NUMBER
+
+    NUMBER          shift and go to state 8
+
+    factor                         shift and go to state 27
+
+state 23
+
+    (9) term -> OPEN_PAR expr DIV . factor CLOSE_PAR
+    (12) factor -> . NUMBER
+
+    NUMBER          shift and go to state 8
+
+    factor                         shift and go to state 28
+
+state 24
+
+    (7) term -> OPEN_PAR expr . MULT factor CLOSE_PAR
+    (9) term -> OPEN_PAR expr . DIV factor CLOSE_PAR
+    (2) expr -> expr . ADD term
+    (4) expr -> expr . SUB term
+
+    MULT            shift and go to state 22
+    DIV             shift and go to state 23
+    ADD             shift and go to state 10
+    SUB             shift and go to state 11
+
+
+state 25
+
+    (3) expr -> OPEN_PAR expr ADD term . CLOSE_PAR
+    (2) expr -> expr ADD term .
+    (6) term -> term . MULT factor
+    (8) term -> term . DIV factor
+
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    CLOSE_PAR       shift and go to state 29
+    ADD             reduce using rule 2 (expr -> expr ADD term .)
+    SUB             reduce using rule 2 (expr -> expr ADD term .)
+    MULT            shift and go to state 12
+    DIV             shift and go to state 13
+
+  ! MULT            [ reduce using rule 2 (expr -> expr ADD term .) ]
+  ! DIV             [ reduce using rule 2 (expr -> expr ADD term .) ]
+
+
+state 26
+
+    (5) expr -> OPEN_PAR expr SUB term . CLOSE_PAR
+    (4) expr -> expr SUB term .
+    (6) term -> term . MULT factor
+    (8) term -> term . DIV factor
+
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    CLOSE_PAR       shift and go to state 30
+    ADD             reduce using rule 4 (expr -> expr SUB term .)
+    SUB             reduce using rule 4 (expr -> expr SUB term .)
+    MULT            shift and go to state 12
+    DIV             shift and go to state 13
+
+  ! MULT            [ reduce using rule 4 (expr -> expr SUB term .) ]
+  ! DIV             [ reduce using rule 4 (expr -> expr SUB term .) ]
+
+
+state 27
+
+    (7) term -> OPEN_PAR expr MULT factor . CLOSE_PAR
+
+    CLOSE_PAR       shift and go to state 31
+
+
+state 28
+
+    (9) term -> OPEN_PAR expr DIV factor . CLOSE_PAR
+
+    CLOSE_PAR       shift and go to state 32
+
+
+state 29
+
+    (3) expr -> OPEN_PAR expr ADD term CLOSE_PAR .
+
+    END_ST          reduce using rule 3 (expr -> OPEN_PAR expr ADD term CLOSE_PAR .)
+    ADD             reduce using rule 3 (expr -> OPEN_PAR expr ADD term CLOSE_PAR .)
+    SUB             reduce using rule 3 (expr -> OPEN_PAR expr ADD term CLOSE_PAR .)
+    MULT            reduce using rule 3 (expr -> OPEN_PAR expr ADD term CLOSE_PAR .)
+    DIV             reduce using rule 3 (expr -> OPEN_PAR expr ADD term CLOSE_PAR .)
+
+
+state 30
+
+    (5) expr -> OPEN_PAR expr SUB term CLOSE_PAR .
+
+    END_ST          reduce using rule 5 (expr -> OPEN_PAR expr SUB term CLOSE_PAR .)
+    ADD             reduce using rule 5 (expr -> OPEN_PAR expr SUB term CLOSE_PAR .)
+    SUB             reduce using rule 5 (expr -> OPEN_PAR expr SUB term CLOSE_PAR .)
+    MULT            reduce using rule 5 (expr -> OPEN_PAR expr SUB term CLOSE_PAR .)
+    DIV             reduce using rule 5 (expr -> OPEN_PAR expr SUB term CLOSE_PAR .)
+
+
+state 31
+
+    (7) term -> OPEN_PAR expr MULT factor CLOSE_PAR .
+
+    MULT            reduce using rule 7 (term -> OPEN_PAR expr MULT factor CLOSE_PAR .)
+    DIV             reduce using rule 7 (term -> OPEN_PAR expr MULT factor CLOSE_PAR .)
+    END_ST          reduce using rule 7 (term -> OPEN_PAR expr MULT factor CLOSE_PAR .)
+    ADD             reduce using rule 7 (term -> OPEN_PAR expr MULT factor CLOSE_PAR .)
+    SUB             reduce using rule 7 (term -> OPEN_PAR expr MULT factor CLOSE_PAR .)
+    CLOSE_PAR       reduce using rule 7 (term -> OPEN_PAR expr MULT factor CLOSE_PAR .)
+
+
+state 32
+
+    (9) term -> OPEN_PAR expr DIV factor CLOSE_PAR .
+
+    MULT            reduce using rule 9 (term -> OPEN_PAR expr DIV factor CLOSE_PAR .)
+    DIV             reduce using rule 9 (term -> OPEN_PAR expr DIV factor CLOSE_PAR .)
+    END_ST          reduce using rule 9 (term -> OPEN_PAR expr DIV factor CLOSE_PAR .)
+    ADD             reduce using rule 9 (term -> OPEN_PAR expr DIV factor CLOSE_PAR .)
+    SUB             reduce using rule 9 (term -> OPEN_PAR expr DIV factor CLOSE_PAR .)
+    CLOSE_PAR       reduce using rule 9 (term -> OPEN_PAR expr DIV factor CLOSE_PAR .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for MULT in state 5 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 5 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 15 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 15 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 17 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 17 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 25 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 25 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 26 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 26 resolved as shift
