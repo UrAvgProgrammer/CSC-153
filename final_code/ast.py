@@ -63,8 +63,9 @@ def prep(tokens):
     contents =  ' '.join(tok_stream)
     ast(contents)
 
-def AST(contents):
+def ast(contents):
     lex.lex()
+    print(contents)
     # print(contents)
     # data = open('code.txt', 'r')
     # contents = data.read()
@@ -73,14 +74,48 @@ def AST(contents):
 
     while True:
         tok = lex.token()
+        print(tok)
         # print(tok)
         if not tok: break
 
     tok = lex.token()
+    print(tok)
     # print(tok)
 
     yacc.yacc() 
     t = yacc.parse(contents)
-    t
-    print(t)
 
+def start(tokens):
+    code = []
+    start = []
+    for token in tokens:
+        if token[0] == 'int':
+            start.append(token[0])
+        elif token[0] == 'main':
+            start.append(token[0])
+        elif token[0] == '(':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append((token))
+        elif token[0] == ')':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append((token))
+        elif token[0] == '{':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append((token))
+        elif token[0] == '}':
+            if token[0] not in start:
+                start.append(token[0])
+            else:
+                code.append((token))
+        else:
+            code.append((token))
+    # if len(start) != 6:
+    #   print('Syntax error')
+    #   quit()
+    return code
