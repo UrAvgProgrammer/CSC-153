@@ -11,6 +11,11 @@ class CST():
         self.root = Node("Prog")
         self.current_head = self.root
         self.current_token = self.tokens[self.pos]
+        self.div_parent = None
+        self.mul_parent = None
+        self.add_parent = None
+        self.div_parent = None
+
 
     def step(self):
         self.move_pos()
@@ -29,10 +34,15 @@ class CST():
                 if self.tokens[self.pos + 1][0] == 'EQUAL': 
                     self.assign()
             elif self.current_token[0] == 'END_ST':
-                self.current_head = self.root
-                self.assign()
+                if self.has_next():
+                    self.current_head = self.root
+                    return self.assign()
+                else:
+                    data_name = Node('END_ST', parent = self.current_head)
+                    assign = Node(';', parent = data_name)
+                    exit()
             else:
-                self.expression()
+                return self.expression()
 
     def has_next(self):
         if self.pos <= len(self.tokens)-1 and self.tokens[self.pos+1][0] != 'END_ST':
@@ -40,38 +50,75 @@ class CST():
         return False
 
     def expression(self):
-
+        
         term1 = self.term()
 
-        while self.current_token[0] in ['ADD', 'MINUS']:
+        while self.current_token[0] in ['ADD', 'SUB']:
             if self.current_token[0] == 'ADD':
-                self.current_head = Node('ADD', parent = self.current_head)
+                local_head = Node('ADD', parent = self.current_head)
 
-                term1.parent = self.current_head
+                term1.parent = local_head
                 
-
-                data_name = Node('operation', parent = self.current_head)
+                data_name = Node('operation', parent = local_head)
                 data_value = Node(self.current_token[1], parent = data_name)
 
-                
                 self.step()
-
+                
                 term1 = self.expression()
-                term1.parent = self.current_head
+                term1.parent = local_head
 
+                self.step()
+                term1 = local_head
             else:
-                self.current_head = Node('MINUS', parent = self.current_head)
+                local_head = Node('SUB', parent = self.current_head)
 
-                term1.parent = self.current_head
+                term1.parent = local_head
                 
-                data_name = Node('operation', parent = self.current_head)
+
+                data_name = Node('operation', parent = local_head)
                 data_value = Node(self.current_token[1], parent = data_name)
 
+                
                 self.step()
-
+               
                 term1 = self.expression()
-                term1.parent = self.current_head
+                term1.parent = local_head
 
+                self.step()
+                term1 = local_head
+
+        # while self.current_token[0] in ['ADD', 'SUB']:
+        #     if self.current_token[0] == 'ADD':
+        #         local_head = Node('ADD', parent = self.current_head)
+
+        #         term1.parent = local_head
+
+        #         data_name = Node('operation', parent = local_head)
+        #         data_value = Node(self.current_token[1], parent = data_name)
+
+        #         self.step()
+
+        #         term1 = self.expression()
+        #         term1.parent = local_head
+
+        #         self.step()
+        #         term1 = local_head
+
+        #     else:
+        #         local_head = Node('SUB', parent = self.current_head)
+
+        #         term1.parent = local_head
+                
+        #         data_name = Node('operation', parent =  local_head)
+        #         data_value = Node(self.current_token[1], parent = data_name)
+
+        #         self.step()
+                
+        #         term1 = self.expression()
+        #         term1.parent = local_head
+
+        #         self.step()
+        #         term1 = local_head
         return term1
 
     def term(self):
@@ -79,21 +126,38 @@ class CST():
 
         while self.current_token[0] in ['MUL', 'DIV']:
             if self.current_token[0] == 'MUL':
+                local_head = Node('MUL', parent = self.current_head)
+
+                factor1.parent = local_head
+                
+                data_name = Node('operation', parent = local_head)
+                data_value = Node(self.current_token[1], parent = data_name)
+
                 self.step()
-                factor1 = self.factor()
-                self.data_value = Node('*', parent = self.current_head)
+                
+                factor1 = self.expression()
+                factor1.parent = local_head
+
                 self.step()
-                # self.term()
-                # self.data_name = Node('END_ST', parent = self.current_head)
-                # self.data_value = Node(';', parent = self.current_head)
+                factor1 = local_head
             else:
-                step()
-                factor1 = self.factor()
-                self.data_value = Node('/', parent = self.current_head)
-                step()
-                # self.factor()
-                # self.data_name = Node('END_ST', parent = self.current_head)
-                # self.data_value = Node(';', parent = self.current_head)
+                local_head = Node('DIV', parent = self.current_head)
+
+                factor1.parent = local_head
+                
+
+                data_name = Node('operation', parent = local_head)
+                data_value = Node(self.current_token[1], parent = data_name)
+
+                
+                self.step()
+               
+                factor1 = self.expression()
+                factor1.parent = local_head
+
+                self.step()
+                factor1 = local_head
+
         return factor1
 
 
@@ -109,30 +173,29 @@ class CST():
                 data_name = Node(self.current_token[0], parent = self.current_head)
                 current_head = data_name
                 self.data_value = Node(self.current_token[1], parent = current_head)
-                return local_head
+                return data_name
                 
         elif self.current_token[0] == 'OPEN_PAR':
             data_root = Node('EXPRESSION', parent = self.current_head)
             data_name = Node('OPEN_PAR', parent = data_root)
             data_value = Node('(', parent = data_name)
 
-            self.move_pos()
-            self.next_token()
+            self.current_head = data_root
+            self.step()
 
             result = self.expression()
             result.parent = data_root
 
+            
             data_name = Node('CLOSE_PAR', parent = data_root)
             self.data_value = Node(')', parent = data_name)
-
             return data_root
 
 
-
-    # assign := identifier = factor | number |
     def assign(self):
         self.assign_head = Node("Assign", parent = self.current_head)
-        #variable
+        
+        
         self.current_head = self.assign_head
         self.data_name = Node(self.current_token[0], parent = self.current_head)
         self.current_head = self.data_name

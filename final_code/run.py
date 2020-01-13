@@ -3,7 +3,6 @@ from c_lexer import imp_lex
 from c_syntax_analysis import syntax_analize, parser_CST
 from ast import prep, ast, start
 from cst import CST
-from cst_new import Parser, traverse
 
 sys.setrecursionlimit(10000)
 
@@ -32,6 +31,7 @@ code_to_parse = syntax_analize(lexical_analysis)
 
 cst = CST(code_to_parse)
 cst.start()
+print('CST')
 cst.print_tree()
 
 # y = Parser(code_to_parse).parse()
