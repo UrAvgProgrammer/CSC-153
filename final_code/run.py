@@ -47,6 +47,6 @@ print('\nAST')
 
 data = open("code.c", 'r')
 contents = data.read()
-tokens = imp_lex(contents)
+tokens = imp_lex2(contents)
 prep(start(tokens))
 
