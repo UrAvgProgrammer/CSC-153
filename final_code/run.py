@@ -1,7 +1,9 @@
 import sys, os, re
 from c_lexer import imp_lex
 from c_syntax_analysis import syntax_analize, parser_CST
-from ast import prep, ast, start
+from Ast import prep
+from ast_lexer import imp_lex as imp_lex2
+from ast_start import start
 from cst import CST
 
 sys.setrecursionlimit(10000)
@@ -36,3 +38,15 @@ cst.print_tree()
 
 # y = Parser(code_to_parse).parse()
 # traverse(y)
+
+#
+# To run AST codes here
+#
+
+print('\nAST')
+
+data = open("code.c", 'r')
+contents = data.read()
+tokens = imp_lex(contents)
+prep(start(tokens))
+

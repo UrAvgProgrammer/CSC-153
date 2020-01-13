@@ -50,7 +50,6 @@ class CST():
         return False
 
     def expression(self):
-        
         term1 = self.term()
 
         while self.current_token[0] in ['ADD', 'SUB']:
@@ -86,39 +85,6 @@ class CST():
 
                 self.step()
                 term1 = local_head
-
-        # while self.current_token[0] in ['ADD', 'SUB']:
-        #     if self.current_token[0] == 'ADD':
-        #         local_head = Node('ADD', parent = self.current_head)
-
-        #         term1.parent = local_head
-
-        #         data_name = Node('operation', parent = local_head)
-        #         data_value = Node(self.current_token[1], parent = data_name)
-
-        #         self.step()
-
-        #         term1 = self.expression()
-        #         term1.parent = local_head
-
-        #         self.step()
-        #         term1 = local_head
-
-        #     else:
-        #         local_head = Node('SUB', parent = self.current_head)
-
-        #         term1.parent = local_head
-                
-        #         data_name = Node('operation', parent =  local_head)
-        #         data_value = Node(self.current_token[1], parent = data_name)
-
-        #         self.step()
-                
-        #         term1 = self.expression()
-        #         term1.parent = local_head
-
-        #         self.step()
-        #         term1 = local_head
         return term1
 
     def term(self):
