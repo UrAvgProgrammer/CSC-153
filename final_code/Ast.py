@@ -65,22 +65,15 @@ def prep(tokens):
 
 def ast(contents):
     lex.lex()
-    # print(contents)
-    # data = open('code.txt', 'r')
-    # contents = data.read()
-
     lex.input(contents)
 
     while True:
         tok = lex.token()
-        # print(tok)
         if not tok: break
 
     tok = lex.token()
-    # print(tok)
 
     yacc.yacc() 
     t = yacc.parse(contents)
-    t
     print(t)
 
